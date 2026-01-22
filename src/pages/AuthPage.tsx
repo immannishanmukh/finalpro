@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Code2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { UserRole } from '../types';
 
 interface AuthPageProps {
   mode: 'login' | 'signup';
@@ -13,16 +12,21 @@ export default function AuthPage({ mode, onNavigate }: AuthPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
+
+  // Default role is now hardcoded
+  const DEFAULT_ROLE = 'mentor';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (mode === 'login') {
-      await login(email, password, role);
+      await login(email, password, DEFAULT_ROLE);
     } else {
-      await signup(email, password, role, name);
+      await signup(email, password, DEFAULT_ROLE, name);
     }
-    onNavigate(role === 'student' ? 'student-dashboard' : 'mentor-dashboard');
+    
+    // Always navigate to the mentor dashboard
+    onNavigate('mentor-dashboard');
   };
 
   return (
@@ -34,7 +38,7 @@ export default function AuthPage({ mode, onNavigate }: AuthPageProps) {
           </div>
           <h2 className="text-3xl font-bold text-gray-900">MEET-OF-MINDS</h2>
           <p className="text-gray-600 mt-2">
-            {mode === 'login' ? 'Welcome back!' : 'Create your account'}
+            {mode === 'login' ? 'Welcome back, Mentor!' : 'Create your Mentor account'}
           </p>
         </div>
 
@@ -80,33 +84,7 @@ export default function AuthPage({ mode, onNavigate }: AuthPageProps) {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Role
-            </label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="student"
-                  checked={role === 'student'}
-                  onChange={(e) => setRole(e.target.value as UserRole)}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-gray-700">Student</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="mentor"
-                  checked={role === 'mentor'}
-                  onChange={(e) => setRole(e.target.value as UserRole)}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-gray-700">Mentor</span>
-              </label>
-            </div>
-          </div>
+          {/* Role selection UI has been removed here */}
 
           <button
             type="submit"
